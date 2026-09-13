@@ -107,20 +107,6 @@ Do **not** hard-code the API key in the source code.
 
 Do **not** commit `.env` files containing the API key.
 
-## Run Locally
-
-Start the Vite development server:
-
-```bash
-npm run dev
-```
-
-For testing the frontend together with Netlify Functions:
-
-```bash
-netlify dev
-```
-
 ## Deployment
 
 1. Push the project to GitHub.
