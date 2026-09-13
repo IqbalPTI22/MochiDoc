@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileType, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface DocumentInputProps {
   onDocumentReady: (text: string, info: { name: string, type: string, size: number, lines: number }) => void;
@@ -17,14 +16,13 @@ export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
 
     setError(null);
 
-    // Basic validation
     if (!file.type.startsWith('text/') && !file.name.match(/\.(txt|md|json|yaml|yml|xml|csv|log|ini|cfg|conf|toml)$/i)) {
-      setError("Oops! MochiDoc can only read text-based documents. Please choose a supported text file.");
+      setError("ERR_UNSUPPORTED_FORMAT: Please choose a supported text file.");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-       setError("This file is a bit too big for me! Please keep it under 5MB.");
+       setError("ERR_FILE_TOO_LARGE: Max size is 5MB.");
        return;
     }
 
@@ -40,20 +38,20 @@ export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
       });
     };
     reader.onerror = () => {
-      setError("Something went wrong reading your file.");
+      setError("ERR_READ_FAILED: Something went wrong reading your file.");
     };
     reader.readAsText(file);
   };
 
   const handlePasteSubmit = () => {
     if (!pastedText.trim()) {
-      setError("MochiDoc needs something to analyze first. Paste some text.");
+      setError("ERR_EMPTY_INPUT: Paste some text first.");
       return;
     }
     setError(null);
     const lines = pastedText.split('\n').length;
     onDocumentReady(pastedText, {
-      name: 'Pasted Text',
+      name: 'PASTED_BUFFER',
       type: 'TEXT',
       size: pastedText.length,
       lines
@@ -61,28 +59,27 @@ export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white rounded-[2rem] shadow-xl shadow-pink-100/50 p-6 md:p-8 border border-pink-50">
-      
-      <div className="flex justify-center space-x-2 mb-6">
+    <div className="flex flex-col h-full w-full">
+      <div className="flex gap-4 mb-8">
         <button 
           onClick={() => setPasteMode(false)}
-          className={`px-6 py-2 rounded-full font-bold transition-all ${!pasteMode ? 'bg-pink-100 text-pink-700 shadow-sm' : 'text-slate-400 hover:bg-slate-50'}`}
+          className={`action-btn ${!pasteMode ? 'primary' : ''}`}
         >
           Upload File
         </button>
         <button 
           onClick={() => setPasteMode(true)}
-          className={`px-6 py-2 rounded-full font-bold transition-all ${pasteMode ? 'bg-pink-100 text-pink-700 shadow-sm' : 'text-slate-400 hover:bg-slate-50'}`}
+          className={`action-btn ${pasteMode ? 'primary' : ''}`}
         >
           Paste Text
         </button>
       </div>
 
-      <div className="min-h-[240px] flex flex-col justify-center">
+      <div className="flex-1 flex flex-col">
         {!pasteMode ? (
           <div 
             onClick={() => fileInputRef.current?.click()}
-            className="border-3 border-dashed border-pink-200 rounded-3xl p-10 flex flex-col items-center justify-center cursor-pointer hover:border-pink-400 hover:bg-pink-50/50 transition-all group"
+            className="flex-1 min-h-[300px] border-4 border-dashed border-ink-faint flex flex-col items-center justify-center p-8 text-center hover:border-accent hover:bg-accent/5 transition-colors cursor-pointer"
           >
             <input 
               type="file" 
@@ -91,39 +88,40 @@ export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
               accept=".txt,.md,.json,.yaml,.yml,.xml,.csv,.log,.ini,.cfg,.conf,.toml,text/*"
               onChange={handleFileSelected}
             />
-            <div className="bg-pink-100 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
-              <UploadCloud className="w-10 h-10 text-pink-500" />
+            <div className="text-accent mb-6">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+              </svg>
             </div>
-            <h3 className="text-xl font-bold text-slate-700 mb-2">Drop a document here</h3>
-            <p className="text-slate-500 text-center text-sm max-w-xs">
+            <h3 className="font-mono text-xl mb-2 text-ink font-bold">Drop a document here</h3>
+            <p className="text-sm text-ink-dim max-w-sm mb-10">
               Supports .txt, .md, .json, .yaml, .log, .csv, and other text formats.
             </p>
-            <p className="text-pink-400 font-semibold text-xs mt-4 uppercase tracking-wider bg-pink-100/50 px-3 py-1 rounded-full">
-              Text documents only
-            </p>
+            <div className="font-mono text-[0.7rem] text-accent uppercase tracking-wider">
+              <span className="mr-2">●</span> TEXT DOCUMENTS ONLY
+            </div>
           </div>
         ) : (
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full flex-1">
             <textarea
-              className="w-full h-48 p-4 rounded-2xl border-2 border-pink-100 focus:border-pink-300 focus:ring-4 focus:ring-pink-100 transition-all resize-none outline-none text-slate-700"
-              placeholder="Paste your text here..."
+              className="flex-1 w-full p-6 bg-ink-faint border-2 border-ink text-ink font-mono focus:border-accent outline-none resize-none min-h-[300px]"
+              placeholder="> Paste your text buffer here..."
               value={pastedText}
               onChange={(e) => setPastedText(e.target.value)}
             />
             <button 
               onClick={handlePasteSubmit}
-              className="mt-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl py-3 font-bold transition-colors shadow-md"
+              className="action-btn primary mt-6 self-start"
             >
-              Use Pasted Text
+              Execute Analysis
             </button>
           </div>
         )}
       </div>
 
       {error && (
-        <div className="mt-4 p-4 bg-red-50 border-l-4 border-red-400 rounded-r-xl flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-          <p className="text-red-700 text-sm font-medium">{error}</p>
+        <div className="mt-6 p-4 border-2 border-red-500 bg-red-500/10 text-red-400 font-mono text-sm">
+          {error}
         </div>
       )}
     </div>

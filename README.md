@@ -22,18 +22,7 @@ MochiDoc accepts text-based documents through:
 
 Supported text-oriented formats currently include:
 
-- `.txt`
-- `.md`
-- `.json`
-- `.yaml`
-- `.yml`
-- `.xml`
-- `.csv`
-- `.log`
-- `.ini`
-- `.cfg`
-- `.conf`
-- `.toml`
+`.txt` `.md` `.json` `.yaml` `.yml` `.xml` `.csv` `.log` `.ini` `.cfg` `.conf` `.toml`
 
 > 🚫 Image files and image-based document analysis are not supported.
 
@@ -112,26 +101,6 @@ Example:
 or:
 
 > Which errors are most important?
-
----
-
-## 🎀 Design
-
-MochiDoc uses a cute anime-inspired visual style.
-
-Design goals:
-
-- Soft and friendly interface
-- Rounded cards
-- Pastel-inspired appearance
-- Cute mascot
-- Subtle animations
-- Clean typography
-- Responsive layout
-
-The design aims to balance a cute aesthetic with practical document analysis.
-
----
 
 ## 🏗️ Architecture
 
