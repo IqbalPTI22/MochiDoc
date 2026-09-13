@@ -2,13 +2,20 @@ import React, { useState, useRef } from 'react';
 
 interface DocumentInputProps {
   onDocumentReady: (text: string, info: { name: string, type: string, size: number, lines: number }) => void;
+  mode: string;
 }
 
-export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
+export function DocumentInput({ onDocumentReady, mode }: DocumentInputProps) {
   const [pasteMode, setPasteMode] = useState(false);
   const [pastedText, setPastedText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isGeneral = mode === 'General Mode';
+  const allowedExts = isGeneral 
+    ? ['txt', 'md', 'csv', 'rtf'] 
+    : ['json', 'yaml', 'yml', 'xml', 'csv', 'log', 'ini', 'cfg', 'conf', 'toml'];
+  const allowedExtsString = allowedExts.map(ext => `.${ext}`).join(', ');
 
   const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -16,8 +23,11 @@ export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
 
     setError(null);
 
-    if (!file.type.startsWith('text/') && !file.name.match(/\.(txt|md|json|yaml|yml|xml|csv|log|ini|cfg|conf|toml)$/i)) {
-      setError("ERR_UNSUPPORTED_FORMAT: Please choose a supported text file.");
+    const extMatch = file.name.match(/\.([^.]+)$/);
+    const fileExt = extMatch ? extMatch[1].toLowerCase() : '';
+
+    if (!allowedExts.includes(fileExt) && !file.type.startsWith('text/')) {
+      setError(`ERR_UNSUPPORTED_FORMAT: Domain ${isGeneral ? 'GEN_ANALYST' : 'COMP_SCI'} only accepts ${allowedExtsString}.`);
       return;
     }
 
@@ -85,7 +95,7 @@ export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
               type="file" 
               className="hidden" 
               ref={fileInputRef}
-              accept=".txt,.md,.json,.yaml,.yml,.xml,.csv,.log,.ini,.cfg,.conf,.toml,text/*"
+              accept={allowedExts.map(ext => `.${ext}`).join(',')}
               onChange={handleFileSelected}
             />
             <div className="text-accent mb-6">
@@ -95,7 +105,9 @@ export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
             </div>
             <h3 className="font-mono text-xl mb-2 text-ink font-bold">Drop a document here</h3>
             <p className="text-sm text-ink-dim max-w-sm mb-10">
-              Supports .txt, .md, .json, .yaml, .log, .csv, and other text formats.
+              {isGeneral 
+                ? 'Supports .txt, .md, .csv, and .rtf files for general analysis.'
+                : 'Supports .json, .yaml, .log, .xml, .ini, and other configs for technical analysis.'}
             </p>
             <div className="font-mono text-[0.7rem] text-accent uppercase tracking-wider">
               <span className="mr-2">●</span> TEXT DOCUMENTS ONLY
@@ -105,7 +117,7 @@ export function DocumentInput({ onDocumentReady }: DocumentInputProps) {
           <div className="flex flex-col h-full flex-1">
             <textarea
               className="flex-1 w-full p-6 bg-ink-faint border-2 border-ink text-ink font-mono focus:border-accent outline-none resize-none min-h-[300px]"
-              placeholder="> Paste your text buffer here..."
+              placeholder={isGeneral ? "> Paste your article, notes, or essay here..." : "> Paste your JSON, logs, or config data here..."}
               value={pastedText}
               onChange={(e) => setPastedText(e.target.value)}
             />

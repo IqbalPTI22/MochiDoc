@@ -77,19 +77,30 @@ export default function App() {
 
             {(appState === 'input' || appState === 'error') && (
               <div className="mt-8 flex flex-col gap-2">
-                <div className="font-mono text-[0.6rem] opacity-40 mb-2 uppercase tracking-widest">Domain_Select</div>
+                <div className="font-mono text-[0.6rem] opacity-40 mb-2 uppercase tracking-widest">Mode_Select</div>
                 <button 
                   onClick={() => setMode('General Mode')}
                   className={`border-2 border-ink px-6 py-2 font-mono text-xs font-bold text-left transition-colors ${mode === 'General Mode' ? 'bg-ink text-panel' : 'text-ink bg-transparent hover:bg-ink-faint'}`}
                 >
                   GEN_ANALYST
                 </button>
+                {mode === 'General Mode' && (
+                  <p className="text-[0.65rem] text-ink-dim font-mono mb-2 ml-2 border-l-2 border-accent pl-2">
+                    For articles, notes, & literature.<br/>Accepts: .txt, .md, .csv, .rtf
+                  </p>
+                )}
+
                 <button 
                   onClick={() => setMode('CompScience Mode')}
                   className={`border-2 border-ink px-6 py-2 font-mono text-xs font-bold text-left transition-colors ${mode === 'CompScience Mode' ? 'bg-ink text-panel' : 'text-ink bg-transparent hover:bg-ink-faint'}`}
                 >
-                  COMP_SCI_V2
+                  COMP_SCI
                 </button>
+                {mode === 'CompScience Mode' && (
+                  <p className="text-[0.65rem] text-ink-dim font-mono mb-2 ml-2 border-l-2 border-accent pl-2">
+                    For configs, logs, & code.<br/>Accepts: .json, .yaml, .xml, .log, .ini...
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -100,7 +111,7 @@ export default function App() {
           {/* Input State */}
           {(appState === 'input' || appState === 'error') && (
             <div className="flex-1 flex flex-col w-full h-full">
-              <DocumentInput onDocumentReady={handleDocumentReady} />
+              <DocumentInput onDocumentReady={handleDocumentReady} mode={mode} />
               {appState === 'error' && (
                 <div className="mt-6 p-4 border-2 border-red-500 bg-red-500/10 text-red-400 font-mono text-sm">
                   <p className="font-bold mb-2">ERROR_DETECTED</p>

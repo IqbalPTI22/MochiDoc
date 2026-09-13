@@ -1,128 +1,135 @@
-# 🌸 MochiDoc
+# MochiDoc
 
-> Your cute little document analyst.
+> AI-powered text document analyzer with General and CompScience analysis modes.
 
-MochiDoc is a cute anime-inspired AI document analyzer designed to help users understand and analyze text-based documents.
+MochiDoc allows users to upload or paste text-based documents and analyze them using Gemini AI.
 
-The app provides two analysis modes:
+## Features
 
-- 🌸 **General Mode** — for ordinary text documents, notes, articles, documentation, and similar content.
-- 💻 **CompScience Mode** — for technical text such as configuration files, logs, game settings, system settings, and other computer-related documents.
+* Upload text-based documents
+* Paste text directly
+* Text documents only — no image/OCR support
+* General analysis mode
+* CompScience analysis mode
+* Document summary and key points
+* Technical analysis for configs, logs, settings, and related files
+* Ask questions about the provided document
+* Copy analysis results
+* Responsive single-page interface
+* Gemini API integration through Netlify Functions
 
----
+## Analysis Modes
 
-## ✨ Features
+### General
 
-### 📄 Text Document Analysis
+For normal text documents such as:
 
-MochiDoc accepts text-based documents through:
+* `.txt`
+* `.md`
+* Articles
+* Notes
+* Documentation
+* Essays
+* README files
 
-- File upload
-- Direct text input / paste
+Provides:
 
-Supported text-oriented formats currently include:
+* Summary
+* Key points
+* Important information
+* Simple explanations
+* Key takeaways
+* Document Q&A
 
-`.txt` `.md` `.json` `.yaml` `.yml` `.xml` `.csv` `.log` `.ini` `.cfg` `.conf` `.toml`
+### CompScience
 
-> 🚫 Image files and image-based document analysis are not supported.
+For computer-related text such as:
 
----
+* `.json`
+* `.yaml` / `.yml`
+* `.xml`
+* `.ini`
+* `.cfg`
+* `.conf`
+* `.toml`
+* `.log`
+* Game configuration
+* System settings
+* Server configuration
+* Error logs
+* Technical documentation
 
-## 🌸 General Mode
+Provides:
 
-General Mode is intended for ordinary documents and text.
+* Technical overview
+* Important settings
+* Errors
+* Warnings
+* Potential issues
+* Technical explanations
+* Troubleshooting suggestions
 
-It can provide:
+## Tech Stack
 
-- 📝 Summary
-- 🔑 Key Points
-- 📌 Important Information
-- 💡 Simple Explanations
-- 🎯 Key Takeaways
-- ❓ Ask questions about the document
+* React
+* TypeScript
+* Vite
+* Gemini API
+* Netlify Functions
+* GitHub
 
-The AI is instructed to use the provided document as the primary context and avoid inventing information that is not supported by the document.
+## Installation
 
----
+Clone the repository:
 
-## 💻 CompScience Mode
+```bash
+git clone <your-repository-url>
+cd mochidoc
+```
 
-CompScience Mode is designed for computer-science and technical text.
+Install dependencies:
 
-Useful examples include:
+```bash
+npm install
+```
 
-- Game configuration files
-- `.ini` / `.cfg` settings
-- JSON configuration
-- YAML configuration
-- XML configuration
-- Application settings
-- System settings
-- Server configuration
-- Console output
-- Error logs
-- Warning logs
-- Debugging information
-- Technical README files
-- Developer documentation
+## Environment Variable
 
-The analysis can identify and explain:
+MochiDoc uses the Gemini API through a Netlify server-side function.
 
-- Technical overview
-- Important settings
-- Errors
-- Warnings
-- Notable information
-- Potential issues
-- Possible troubleshooting suggestions
+Create/configure:
 
-The AI should distinguish between information directly found in the document and interpretation or possible causes.
+```env
+GEMINI_API_KEY=your_gemini_api_key
+```
 
----
+Do **not** hard-code the API key in the source code.
 
-## 🤖 AI Features
+Do **not** commit `.env` files containing the API key.
 
-MochiDoc uses Google's Gemini API for document analysis.
+## Run Locally
 
-The application supports:
+Start the Vite development server:
 
-### Analyze Document
+```bash
+npm run dev
+```
 
-The selected document is analyzed according to the selected mode.
+For testing the frontend together with Netlify Functions:
 
-### Ask the Document
+```bash
+netlify dev
+```
 
-After analysis, users can ask questions about the provided document.
+## Deployment
 
-Example:
-
-> What does this setting do?
-
-or:
-
-> Which errors are most important?
-
-## 🏗️ Architecture
-
-MochiDoc is built as a Vite + TypeScript web application.
-
-The Gemini API integration uses a server-side Netlify Function rather than exposing the API key directly in the browser.
-
-### Production flow
+1. Push the project to GitHub.
+2. Import the repository.
+3. Add the environment variable:
 
 ```text
-Browser
-   │
-   │ Document / Question
-   ▼
-Netlify Function
-   │
-   │ GEMINI_API_KEY
-   ▼
-Gemini API
-   │
-   ▼
-AI Response
-   │
-   ▼
-MochiDoc UI
+GEMINI_API_KEY
+```
+
+4. Set its value to your Gemini API key.
+5. Deploy the project.
